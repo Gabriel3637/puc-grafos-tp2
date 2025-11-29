@@ -40,5 +40,5 @@ void optimumBranching(){
 
     //se um ciclo transforma em super vértice aí repete algoritmo
 
-    //
+    //tome
 }
