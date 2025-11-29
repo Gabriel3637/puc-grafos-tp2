@@ -25,10 +25,21 @@ int main(void)
     assert(img[3 * 3 + 2] == 0xFF);
     stbi_image_free(img);
 
-    Graph graph = Graph(3);
-    assert(graph.vertexCount() == 3);
-    graph.setEdge(0, 1, 1);
-    assert(graph.getEdge(0, 1) == 1);
+    Graph graph = Graph(5);
+    assert(graph.vertexCount() == 5);
+    assert(graph.edgeCount() == 0);
+    for (int i = graph.vertexCount() - 1; i > -1; i--)
+    {
+        for (int j = i - 1; j > -1; j--)
+        {
+            std::cout << i << ", " << j << std::endl;
+            graph.setEdge(i, j, i);
+            //            assert(graph.getEdge(i, j) == i);
+            //                assert(graph.getEdge(j, i) == i);
+        }
+    }
+
+    std::cout << graph.toString() << std::endl;
 
     return 0;
 }
