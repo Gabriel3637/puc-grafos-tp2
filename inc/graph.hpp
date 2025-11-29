@@ -27,4 +27,5 @@ class Graph
     Graph(int numVertices);
     std::string toString();
     void addEdge(int u, int v, int w);
+    Graph optimumBranching();
 };

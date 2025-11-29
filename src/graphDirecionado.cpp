@@ -32,3 +32,7 @@ std::string Graph::toString(){
 void Graph::addEdge(int u, int v, int w){
     listaAdjacencia[u].push_back(Edge(u,v,w));
 }
+
+Graph optimumBranching(){
+    Graph graph
+}
