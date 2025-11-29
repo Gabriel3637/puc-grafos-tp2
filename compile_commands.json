@@ -1,0 +1,16 @@
+[
+  {
+    "arguments": [
+      "/nix/store/ag7fc58qzff4j1sgd7v98irhcr6vcg8v-gcc-wrapper-14.3.0/bin/g++",
+      "-Iinc",
+      "-Isrc",
+      "-c",
+      "-o",
+      ".obj/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/mateus/repos/puc-grafos-tp2",
+    "file": "/home/mateus/repos/puc-grafos-tp2/src/main.cpp",
+    "output": "/home/mateus/repos/puc-grafos-tp2/.obj/main.o"
+  }
+]
