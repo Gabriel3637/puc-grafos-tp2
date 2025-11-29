@@ -1,4 +1,4 @@
-#include "../inc/graph.hpp"  // ou ajuste do caminho conforme o build
+#include "../inc/graph.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -19,7 +19,7 @@ std::string Graph::toString(){
     for (size_t i = 0; i < listaAdjacencia.size(); i++)
     {
         ss << i << ": ";
-        for (const auto& e : listaAdjacencia[i])
+        for (Edge e : listaAdjacencia[i])
         {
             ss << "(" << e.u << " -> " << e.v << ") w="<<e.w << " | ";
         }
