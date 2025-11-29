@@ -5,12 +5,14 @@
 
 typedef struct Edge
 {
-    size_t n;
-    uint8_t w;
+    int u;
+    int v;
+    double w;
 
-    Edge(size_t n, uint8_t w)
+    Edge(int u, int v, int w)
     {
-        this->n = n;
+        this->u = u;
+        this->v = v;
         this->w = w;
     }
 } Edge;
@@ -18,11 +20,11 @@ typedef struct Edge
 class Graph
 {
   private:
-    std::vector<std::vector<Edge>> _e;
 
   public:
-    Graph(size_t vertexes);
-
-    void setEdge(size_t u, size_t v, uint8_t w);
+    std::vector<std::vector<Edge>> listaAdjacencia;
+    std::vector<int> vertexes;
+    Graph(int numVertices);
     std::string toString();
+    void addEdge(int u, int v, int w);
 };
