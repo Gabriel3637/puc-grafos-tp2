@@ -15,6 +15,10 @@ typedef struct Edge
         this->v = v;
         this->w = w;
     }
+
+    bool operator<(const Edge& EdgeComp){
+      return w < EdgeComp.w;
+    }
 } Edge;
 
 class Graph

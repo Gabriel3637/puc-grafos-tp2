@@ -1,14 +1,22 @@
 #include <vector>
 #include "graph.hpp"
+#include <algorithm>
 
 class mst
 {
 private:
-    std::vector<> 
+    
+    std::vector<Edge> _e;
     
 public:
-    mst(/* args */);
-    ~mst();
+    mst(){
+        _e = {};
+    };
+
+
+    ~mst(){
+        
+    }
 };
 
 mst::mst(/* args */)
