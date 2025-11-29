@@ -3,29 +3,32 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <sstream>
 
 using namespace std;
 
 const double INF = 1e18;
 
-// -------------------------------------------------------
-// Algoritmo de Edmonds–Tarjan (Chu–Liu)
-// Retorna APENAS as arestas da DMST
-// -------------------------------------------------------
+
+// ====================================================================
+// DMST (Edmonds–Tarjan / Chu–Liu) – retorna vetor de arestas escolhidas
+// ====================================================================
 static vector<Edge> dmst(int root, vector<Edge> edges, int N)
 {
     vector<Edge> chosen_edges;
 
-    while (true) {
-
+    while (true)
+    {
         vector<double> in(N, INF);
         vector<int> pre(N, -1);
         vector<int> id(N, -1);
         vector<int> vis(N, -1);
 
         // Melhor aresta entrante por vértice
-        for (auto &e : edges) {
-            if (e.u != e.v && e.w < in[e.v]) {
+        for (auto &e : edges)
+        {
+            if (e.u != e.v && e.w < in[e.v])
+            {
                 in[e.v] = e.w;
                 pre[e.v] = e.u;
             }
@@ -33,50 +36,55 @@ static vector<Edge> dmst(int root, vector<Edge> edges, int N)
 
         in[root] = 0;
 
-        // Se tem vértice sem aresta de entrada → DMST não existe
+        // Se algum vértice não tem aresta de entrada -> DMST inexistente
         for (int i = 0; i < N; i++)
             if (in[i] == INF)
                 return {};
 
         // Detectar ciclos
         int cnt = 0;
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++)
+        {
             int v = i;
-            while (vis[v] != i && id[v] == -1 && v != root) {
+            while (vis[v] != i && id[v] == -1 && v != root)
+            {
                 vis[v] = i;
                 v = pre[v];
             }
-            if (v != root && id[v] == -1) {
+            if (v != root && id[v] == -1)
+            {
                 for (int u = pre[v]; u != v; u = pre[u])
                     id[u] = cnt;
                 id[v] = cnt++;
             }
         }
 
-        // Não tem ciclo → fim
-        if (cnt == 0) {
+        // Se não tem ciclos → fim
+        if (cnt == 0)
+        {
             for (int i = 0; i < N; i++)
                 if (i != root)
-                    chosen_edges.push_back({pre[i], i, in[i]});
+                    chosen_edges.push_back(Edge(pre[i], i, in[i]));
             return chosen_edges;
         }
 
-        // Reindexação: vértices fora do ciclo recebem novo id
+        // Reindexar vértices sem ciclo
         for (int i = 0; i < N; i++)
             if (id[i] == -1)
                 id[i] = cnt++;
 
-        // Gerar grafo contraído
+        // Recriar lista de arestas para grafo contraído
         vector<Edge> newEdges;
         newEdges.reserve(edges.size());
 
-        for (auto &e : edges) {
+        for (auto &e : edges)
+        {
             int u = id[e.u];
             int v = id[e.v];
             double w = e.w;
 
             if (u != v)
-                newEdges.push_back({u, v, w - in[e.v]});
+                newEdges.push_back(Edge(u, v, w - in[e.v]));
         }
 
         edges = newEdges;
@@ -87,27 +95,80 @@ static vector<Edge> dmst(int root, vector<Edge> edges, int N)
 
 
 
-// -------------------------------------------------------
+// ============================================================
+// Construtor
+// ============================================================
+Graph::Graph(int numVertices)
+{
+    vertexes.resize(numVertices);
+    listaAdjacencia.resize(numVertices);
+
+    for (int i = 0; i < numVertices; i++)
+        vertexes[i] = i;
+}
+
+
+
+// ============================================================
+// toString()
+// ============================================================
+string Graph::toString()
+{
+    stringstream ss;
+
+    for (size_t i = 0; i < listaAdjacencia.size(); i++)
+    {
+        ss << i << ": ";
+        for (const auto &e : listaAdjacencia[i])
+        {
+            ss << "(" << e.u << " -> " << e.v << "), w=" << e.w << " | ";
+        }
+        ss << "\n";
+    }
+
+    return ss.str();
+}
+
+
+
+// ============================================================
+// addEdge
+// ============================================================
+void Graph::addEdge(int u, int v, int w)
+{
+    listaAdjacencia[u].push_back(Edge(u, v, w));
+}
+
+
+
+// ============================================================
 // optimumBranching()
-// Constrói um Graph contendo SOMENTE a DMST
-// -------------------------------------------------------
-Graph Graph::optimumBranching(int root, const vector<Edge>& edgesOriginal)
+//     → Monta vetor de arestas do grafo
+//     → Roda DMST
+//     → Retorna novo Graph contendo apenas as arestas da DMST
+// ============================================================
+Graph Graph::optimumBranching()
 {
     int N = vertexes.size();
 
-    // 1. Rodar DMST
-    vector<Edge> dmstEdges = dmst(root, edgesOriginal, N);
+    // Construir lista de edges do grafo atual
+    vector<Edge> edges;
+    for (int u = 0; u < N; u++)
+        for (auto &e : listaAdjacencia[u])
+            edges.push_back(e);
 
-    // 2. Criar grafo de retorno
-    Graph result(N);
+    int root = 0; // raiz padrão
 
-    // Se não existe DMST → grafo vazio
+    vector<Edge> dmstEdges = dmst(root, edges, N);
+
+    // Retorna grafo vazio se não existe DMST
+    Graph g2(N);
     if (dmstEdges.empty())
-        return result;
+        return g2;
 
-    // 3. Inserir arestas escolhidas
+    // Inserir apenas as arestas da DMST
     for (auto &e : dmstEdges)
-        result.addEdge(e.u, e.v, e.w);
+        g2.addEdge(e.u, e.v, e.w);
 
-    return result;
+    return g2;
 }
