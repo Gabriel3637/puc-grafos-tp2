@@ -8,7 +8,14 @@ if [ ! -d .obj ]; then
     mkdir -p .obj
 fi
 
-g++ -Iinc -Isrc -c src/main.cpp -o .obj/main.o
+for file in src/*.cpp; do
+    if [ -f "$file" ]; then
+        filename=$(basename "$file" .cpp)
+
+        g++ -Iinc -Isrc -c "$file" -o ".obj/${filename}.o"
+    fi
+done
+
 g++ .obj/*.o -o bin/main
 
-echo Build process complete! Available at bin/
+echo "Build process complete! Available at bin/main"
