@@ -33,7 +33,7 @@ void Graph::addEdge(int u, int v, int w){
     listaAdjacencia[u].push_back(Edge(u,v,w));
 }
 
-Graph optimumBranching(){
+void optimumBranching(){
     //achar a raiz
 
     //pra todo vertice q n é a raiz, escolhe a aresta de entrada de menor peso
