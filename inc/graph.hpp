@@ -5,12 +5,14 @@
 
 typedef struct Edge
 {
-    size_t n;
+    size_t u;
+    size_t v;
     uint8_t w;
 
-    Edge(size_t n, uint8_t w)
+    Edge(size_t u, size_t v, uint8_t w)
     {
-        this->n = n;
+        this->u = u;
+        this->v = v;
         this->w = w;
     }
 } Edge;
