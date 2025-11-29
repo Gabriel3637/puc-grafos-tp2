@@ -22,6 +22,3 @@ This project provides image segmentation using **graph-based algorithms**. Two s
 - Henrique Gibert
 - Leonardo Amaral
 - Mateus Henrique Diniz
-- Henrique Giberti
-- Leonardo Amaral
-- Mateus Henrique Diniz
