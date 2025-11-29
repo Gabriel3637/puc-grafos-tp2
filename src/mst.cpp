@@ -1,28 +1,17 @@
-#include <vector>
 #include "graph.hpp"
-#include <algorithm>
+#include <vector>
 
 class mst
 {
-private:
-    
-    std::vector<Edge> _e;
-    
-public:
-    mst(){
-        _e = {};
-    };
+  private:
+    // só pra tirar o erro
+    std::vector<int> a;
 
-
-    ~mst(){
-        
-    }
+  public:
+    mst(/* args */);
+    ~mst();
 };
 
-mst::mst(/* args */)
-{
-}
+mst::mst(/* args */) {}
 
-mst::~mst()
-{
-}
+mst::~mst() {}

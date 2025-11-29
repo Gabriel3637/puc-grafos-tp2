@@ -1,7 +1,13 @@
 #include <cstdint>
+#include <expected>
 #include <optional>
 #include <string>
 #include <vector>
+
+enum GraphError
+{
+    invalidVertex
+};
 
 typedef struct Edge
 {
@@ -25,10 +31,12 @@ class Graph
 {
   private:
     std::vector<std::vector<Edge>> _e;
+    void setEdge(size_t u, size_t v, uint8_t w);
 
   public:
-    Graph(size_t vertexes);
-
-    void setEdge(size_t u, size_t v, uint8_t w);
+    Graph(int v, std::vector<Edge> &edges);
+    std::expected<void, GraphError> neighbors(std::vector<size_t> &n, size_t v);
+    std::expected<std::optional<uint8_t>, GraphError> getWeight(size_t u,
+                                                                size_t v);
     std::string toString();
 };
