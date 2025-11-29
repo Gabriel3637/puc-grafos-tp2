@@ -33,7 +33,7 @@ int main(void) {
                 if((i/3)%width>0){
                     if(img[i]> img[i-3]){
                         red.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
-                    }else{
+                    }else if(img[i] < img[i-3]){
                         red.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
                     }
                 }
@@ -41,7 +41,7 @@ int main(void) {
                 if(i/3/width>0){
                     if(img[i]> img[i-width*3]){
                         red.addEdge(i/3,i/3-width,img[i]-img[i-width*3]);
-                    }else{
+                    }else if(img[i] < img[i - width*3]){
                         red.addEdge(i/3-width,i/3,img[i-width*3]-img[i]);
                     }
                 }
@@ -49,7 +49,7 @@ int main(void) {
                 if((i/3)%width>0){
                     if(img[i]> img[i-3]){
                         green.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
-                    }else{
+                    }else if(img[i] < img[i-3]){
                         green.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
                     }
                 }
@@ -57,7 +57,7 @@ int main(void) {
                 if(i/3/width>0){
                     if(img[i]> img[i-width*3]){
                         green.addEdge(i/3,(i/3-width),img[i]-img[i-width*3]);
-                    }else{
+                    }else if(img[i] < img[i - width*3]){
                         green.addEdge((i/3-width),i/3,img[i-width*3]-img[i]);
                     }
                 }
@@ -65,7 +65,7 @@ int main(void) {
                 if((i/3)%width>0){
                     if(img[i]> img[i-3]){
                         blue.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
-                    }else{
+                    }else if(img[i] < img[i-3]){
                         blue.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
                     }
                 }
@@ -73,7 +73,7 @@ int main(void) {
                 if(i/3/width>0){
                     if(img[i]> img[i-width*3]){
                         blue.addEdge(i/3,(i/3-width),img[i]-img[i-width*3]);
-                    }else{
+                    }else if(img[i] < img[i - width*3]){
                         blue.addEdge((i/3-width),i/3,img[i-width*3]-img[i]);
                     }
                 }
@@ -83,19 +83,10 @@ int main(void) {
 
     //fazer um grafo pra cada cor, no grafo, a aresta é o resultado da subtração do maior pro menor, apontando pro menor
 
-    Graph graph = Graph(5);
-
-    graph.addEdge(0, 1, 10);  
-    graph.addEdge(0, 2, 5);   
-    graph.addEdge(1, 2, 2);   
-    graph.addEdge(1, 3, 1);   
-    graph.addEdge(3, 4, 7);   
-    graph.addEdge(2, 4, 3);   
-
-    graph.addEdge(4, 0, 8);   
     //std::cout << graph.toString() << std::endl;
-    std::cout << "Red: " << red.toString() << std::endl;
-    std::cout << "Green: " << green.toString() << std::endl;
-    std::cout << "Blue: " << blue.toString() << std::endl;
+    std::cout << "Red: \n" << red.toString() << std::endl;
+    std::cout << "Green: \n" << green.toString() << std::endl;
+    std::cout << "Blue: \n" << blue.toString() << std::endl;
 
-    return 0; }
+    return 0; 
+}

@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <vector>
 #include <array>
@@ -29,6 +30,7 @@ double rgbDist(const array<int,3>& a, const array<int,3>& b) {
     Edmonds–Tarjan DMST (Chu-Liu)
     Retorna uma lista de arestas da DMST
 */
+/*
 vector<Edge> dmst(int root, vector<Edge> edges, int N) {
 
     vector<Edge> chosen_edges;
@@ -204,3 +206,4 @@ int main() {
 
     return 0;
 }
+*/

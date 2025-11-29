@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <vector>
 #include <array>
@@ -25,6 +26,7 @@ double rgbDist(const array<int,3>& a, const array<int,3>& b) {
     Edmonds–Tarjan (Chu-Liu/Edmonds)
     Retorna o custo total da arborecência mínima dirigida a partir de root
 */
+/*
 double dmst(int root, vector<Edge> edges, int N) {
     double result = 0;
 
@@ -147,3 +149,4 @@ int main() {
 
     return 0;
 }
+*/
