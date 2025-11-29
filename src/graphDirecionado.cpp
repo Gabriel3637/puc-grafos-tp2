@@ -34,5 +34,11 @@ void Graph::addEdge(int u, int v, int w){
 }
 
 Graph optimumBranching(){
-    
+    //achar a raiz
+
+    //pra todo vertice q n é a raiz, escolhe a aresta de entrada de menor peso
+
+    //se um ciclo transforma em super vértice aí repete algoritmo
+
+    //
 }
