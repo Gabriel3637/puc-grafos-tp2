@@ -9,7 +9,7 @@ typedef struct Edge
     int v;
     double w;
 
-    Edge(int u, int v, int w)
+    Edge(int u, int v, double w)
     {
         this->u = u;
         this->v = v;

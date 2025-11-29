@@ -22,7 +22,7 @@ std::string Graph::toString(){
         for (Edge e : listaAdjacencia[i])
         {
             ss << "(" << e.u << " -> " << e.v << ") w="<<e.w << " | ";
-        }
+        } 
         ss << "\n";
     }
 
