@@ -2,6 +2,37 @@
   {
     "arguments": [
       "/nix/store/ag7fc58qzff4j1sgd7v98irhcr6vcg8v-gcc-wrapper-14.3.0/bin/g++",
+      "-std=c++23",
+      "-Iinc",
+      "-Isrc",
+      "-c",
+      "-o",
+      ".obj/fh.o",
+      "src/fh.cpp"
+    ],
+    "directory": "/home/mateus/repos/puc-grafos-tp2",
+    "file": "/home/mateus/repos/puc-grafos-tp2/src/fh.cpp",
+    "output": "/home/mateus/repos/puc-grafos-tp2/.obj/fh.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/ag7fc58qzff4j1sgd7v98irhcr6vcg8v-gcc-wrapper-14.3.0/bin/g++",
+      "-std=c++23",
+      "-Iinc",
+      "-Isrc",
+      "-c",
+      "-o",
+      ".obj/graph.o",
+      "src/graph.cpp"
+    ],
+    "directory": "/home/mateus/repos/puc-grafos-tp2",
+    "file": "/home/mateus/repos/puc-grafos-tp2/src/graph.cpp",
+    "output": "/home/mateus/repos/puc-grafos-tp2/.obj/graph.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/ag7fc58qzff4j1sgd7v98irhcr6vcg8v-gcc-wrapper-14.3.0/bin/g++",
+      "-std=c++23",
       "-Iinc",
       "-Isrc",
       "-c",
@@ -12,5 +43,20 @@
     "directory": "/home/mateus/repos/puc-grafos-tp2",
     "file": "/home/mateus/repos/puc-grafos-tp2/src/main.cpp",
     "output": "/home/mateus/repos/puc-grafos-tp2/.obj/main.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/ag7fc58qzff4j1sgd7v98irhcr6vcg8v-gcc-wrapper-14.3.0/bin/g++",
+      "-std=c++23",
+      "-Iinc",
+      "-Isrc",
+      "-c",
+      "-o",
+      ".obj/mst.o",
+      "src/mst.cpp"
+    ],
+    "directory": "/home/mateus/repos/puc-grafos-tp2",
+    "file": "/home/mateus/repos/puc-grafos-tp2/src/mst.cpp",
+    "output": "/home/mateus/repos/puc-grafos-tp2/.obj/mst.o"
   }
 ]

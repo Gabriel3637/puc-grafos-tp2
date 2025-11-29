@@ -1,20 +1,17 @@
-#include <vector>
 #include "graph.hpp"
+#include <vector>
 
 class mst
 {
-private:
-    std::vector<> 
-    
-public:
+  private:
+    // só pra tirar o erro
+    std::vector<int> a;
+
+  public:
     mst(/* args */);
     ~mst();
 };
 
-mst::mst(/* args */)
-{
-}
+mst::mst(/* args */) {}
 
-mst::~mst()
-{
-}
+mst::~mst() {}
