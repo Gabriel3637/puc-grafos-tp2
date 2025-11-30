@@ -8,26 +8,34 @@
 
 #include "fh.hpp"
 #include "graph.hpp"
+#include "mst.hpp"
+#include <vector>
 
 int main(void)
 {
-    int width, height, channels;
-    unsigned char *img =
-        stbi_load("./imgs/test.png", &width, &height, &channels, 3);
+    std::cout << "Teste 0" << std::endl;
+    Mst testeMst = Mst();
 
-    FH fh = FH();
-    fh.getChannels(img, width, height);
+    std::cout << "Teste 1" << std::endl;
 
-    for (int i = 0; i < 3; i++)
+    std::vector<Edge> teste = {{0, 1, 10}, {1, 2, 5}, {0, 2, 8}};
+
+    for (Edge e : teste)
     {
-        for (int j = 0; j < width * height; j++)
-        {
-            std::cout << (int)fh.channels[i][j] << " ";
-        }
-        std::cout << std::endl;
+        std::cout << e << std::endl;
     }
 
-    stbi_image_free(img);
+    std::cout << "Teste 2" << std::endl;
+
+    std::vector<size_t> agm = testeMst.generateMST(teste, 3, 10);
+
+    std::cout << "Teste 3" << std::endl;
+    /*
+        for(Edge e: agm){
+            std::cout << e << std::endl;
+        } */
+
+    std::cout << "Teste 4" << std::endl;
 
     return 0;
 }
