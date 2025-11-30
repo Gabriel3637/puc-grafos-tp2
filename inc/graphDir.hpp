@@ -2,6 +2,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <stack>
 
 typedef struct Edge
 {
@@ -27,5 +28,9 @@ class Graph
     Graph(int numVertices);
     std::string toString();
     void addEdge(int u, int v, int w);
-    Graph optimumBranchingTarjan();
+    Graph optimumBranchingGabow(int root);
+    std::vector<int> componentesFracamenteConexos();
+    void SCCUtil(int u, int disc[], int low[], std::stack<int> *st,
+                 bool stackMember[], std::vector<std::vector<int>> &result);
+    std::vector<std::vector<int>> SCC();
 };

@@ -6,14 +6,33 @@
 
 #include <iostream>
 
-#include "graph.hpp"
+#include "../inc/graphDir.hpp" 
+
+double euclidiana(unsigned char *img, int i, int j) {
+    int ri = img[i * 3 + 0];
+    int gi = img[i * 3 + 1];
+    int bi = img[i * 3 + 2];
+
+    int rj = img[j * 3 + 0];
+    int gj = img[j * 3 + 1];
+    int bj = img[j * 3 + 2];
+
+    double dist = std::sqrt(
+        (ri - rj) * (ri - rj) +
+        (gi - gj) * (gi - gj) +
+        (bi - bj) * (bi - bj)
+    );
+
+    return dist;
+}
 
 int main(void) { 
     
      int width=2, height=2, channels = 3;
-    
+     
+    std::string im = "imgs/c45.png";
     unsigned char *img =
-        stbi_load("imgs/test.png", &width, &height, &channels, 3);
+        stbi_load(im.c_str(), &width, &height, &channels, 3);
     
     
     //retorna a imagem convertida em super array
@@ -22,87 +41,63 @@ int main(void) {
     }
     std::cout << '\n';
     //cada vértice é de 3 em 3
-    Graph red = Graph(width*height);
-    Graph green = Graph(width*height);
-    Graph blue = Graph(width*height);
-    //para cada vértice, conecta ele com os vizinhos, o peso da aresta = maior - menor
-    for(int i=0;i<width*height*3;i++){
-        //exclui primeira linha e primeira coluna
-            if(i%3==0){//red
-                //esq
-                if((i/3)%width>0){
-                    if(img[i]>= img[i-3]){
-                        red.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
-                    }else if(img[i] < img[i-3]){
-                        red.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
-                    }
-                }
-                //cima
-                if(i/3/width>0){
-                    if(img[i]>= img[i-width*3]){
-                        red.addEdge(i/3,i/3-width,img[i]-img[i-width*3]);
-                    }else if(img[i] < img[i - width*3]){
-                        red.addEdge(i/3-width,i/3,img[i-width*3]-img[i]);
-                    }
-                }
-            }else if(i%3==1){//green
-                if((i/3)%width>0){
-                    if(img[i]>= img[i-3]){
-                        green.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
-                    }else if(img[i] < img[i-3]){
-                        green.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
-                    }
-                }
-                //cima
-                if(i/3/width>0){
-                    if(img[i]>= img[i-width*3]){
-                        green.addEdge(i/3,(i/3-width),img[i]-img[i-width*3]);
-                    }else if(img[i] < img[i - width*3]){
-                        green.addEdge((i/3-width),i/3,img[i-width*3]-img[i]);
-                    }
-                }
-            }else{//blue
-                if((i/3)%width>0){
-                    if(img[i]>= img[i-3]){
-                        blue.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
-                    }else if(img[i] < img[i-3]){
-                        blue.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
-                    }
-                }
-                //cima
-                if(i/3/width>0){
-                    if(img[i]>= img[i-width*3]){
-                        blue.addEdge(i/3,(i/3-width),img[i]-img[i-width*3]);
-                    }else if(img[i] < img[i - width*3]){
-                        blue.addEdge((i/3-width),i/3,img[i-width*3]-img[i]);
-                    }
-                }
-            }
-        //imaginando como uma matriz, n existe acima se for menor
+    double maxDist = 0;
+    for(int i = 0; i < width*height*3; i += 3) {
+        if((i/3)%width > 0) maxDist = std::max(maxDist, euclidiana(img, i/3, i/3-1));
+        if(i/3/width > 0) maxDist = std::max(maxDist, euclidiana(img, i/3, i/3-width));
+    }
+    double gamma = maxDist * 1.5;
+    
+    Graph image = Graph(width*height);
+    for(int i=0;i<width*height*3;i=i+3){
+        if((i/3)%width>0 ){//n é na esq
+            double dist = euclidiana(img, i/3, i/3-1);
+            image.addEdge(i/3,i/3-1,dist);
+            image.addEdge(i/3-1,i/3,dist);
+        }
+        if(i/3/width>0){//n é em cima
+            double dist = euclidiana(img, i/3, i/3-width);
+            image.addEdge(i/3,i/3-width,dist);
+            image.addEdge(i/3-width,i/3,dist);
+        }
     }
 
-    //fazer um grafo pra cada cor, no grafo, a aresta é o resultado da subtração do maior pro menor, apontando pro menor
+    std::cout << "Image: \n" << image.toString() << std::endl;
 
-    //std::cout << graph.toString() << std::endl;
-    std::cout << "Red: \n" << red.toString() << std::endl;
-    std::cout << "Green: \n" << green.toString() << std::endl;
-    std::cout << "Blue: \n" << blue.toString() << std::endl;
+    //adiciono vértice ligando a todo mundo:
+    Graph image2 = Graph(width*height+1);
 
-    Graph graph = Graph(5);
+    for (int u = 0; u < width*height; u++) {
+        for (auto &e : image.listaAdjacencia[u]) {
+            image2.addEdge(e.u, e.v, e.w);
+        }
+    }
 
-    graph.addEdge(0, 1, 10);  
-    graph.addEdge(0, 2, 5);
-    graph.addEdge(2, 0, 1);     
-    graph.addEdge(1, 2, 2);   
-    graph.addEdge(1, 3, 1);   
-    graph.addEdge(3, 4, 7);   
-    graph.addEdge(2, 4, 3);
-    graph.addEdge(2, 3, 2);
-    graph.addEdge(3, 1, 1);      
+    // adiciona o super root
+    for (int i = 0; i < width*height; i++) {
+        image2.addEdge(width*height, i, gamma);
+    }
 
-    graph.addEdge(4, 0, 8);
-    std::cout << "graph: \n" << graph.toString() << std::endl;
-    std::cout << "MSA: \n" << graph.optimumBranchingTarjan().toString() << std::endl;
+    std::cout << "Image2: \n" << image2.toString() << std::endl;
+
+    Graph gab = image2.optimumBranchingGabow(width*height);
+    std::cout << "MSA: \n" << gab.toString() << std::endl;
+
+    Graph image3 = Graph(width*height);
+    for (int u = 0; u < width*height; u++) {
+        for (auto &e : gab.listaAdjacencia[u]) {
+            image3.addEdge(e.u, e.v, e.w);
+        }
+    }
+
+    //std::cout << "Image3: \n" << image3.toString() << std::endl;
+
+    std::vector<int> fracamente;
+    fracamente = image3.componentesFracamenteConexos();
+
+    for(int i : fracamente){
+        //std::cout<< "[" <<fracamente[i] << "] ";
+    }  
 
     stbi_image_free(img);
 
