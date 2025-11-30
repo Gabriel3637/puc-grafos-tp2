@@ -1,16 +1,41 @@
 #include "fh.hpp"
-#include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <map>
-#include <random>
 #include <tuple>
 #include <vector>
+
+#include "mst.hpp"
+#include "stb_image.h"
+#include "stb_image_write.h"
 
 inline size_t idx(size_t i, int c) { return i * 3 + c; }
 inline uint8_t dif(uint8_t a, uint8_t b) { return abs(a - b); }
 
-void FH::getChannels(std::vector<channel_t> &channels, unsigned char *bmp,
-                     int w, int h)
+typedef struct SegmentColor
+{
+    uint64_t r;
+    uint64_t g;
+    uint64_t b;
+    size_t count;
+
+    SegmentColor(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b), count(0)
+    {
+    }
+} SegmentColor;
+
+void FH::segment(std::string image, int k)
+{
+    this->k = k;
+    int channels;
+    bmp = stbi_load(image.c_str(), &w, &h, &channels, 3);
+    getChannels();
+    getComponents();
+    mergeChannels();
+    drawImage(DrawingMode::color);
+}
+
+void FH::getChannels()
 {
     channels = std::vector<channel_t>(3);
 
@@ -44,8 +69,17 @@ void FH::getChannels(std::vector<channel_t> &channels, unsigned char *bmp,
     }
 }
 
-void FH::mergeChannels(componentSet_t &merged,
-                       std::vector<componentSet_t> &channels)
+void FH::getComponents()
+{
+    components.reserve(3);
+    Mst mst;
+    for (int i = 0; i < 3; i++)
+    {
+        components.push_back(mst.generateMST(channels[i], w * h, k));
+    }
+}
+
+void FH::mergeChannels()
 {
     merged.assign(w * h, 0);
 
@@ -54,29 +88,74 @@ void FH::mergeChannels(componentSet_t &merged,
 
     for (int i = 0; i < w * h; i++)
     {
-        auto componentSet =
-            std::make_tuple(channels[0][i], channels[1][i], channels[2][i]);
+        auto componentSet = std::make_tuple(components[0][i], components[1][i],
+                                            components[2][i]);
 
         if (intersections.find(componentSet) == intersections.end())
         {
             intersections.insert({componentSet, ++unionId});
         }
 
-        merged[i] = unionId;
+        merged[i] = intersections[componentSet];
     }
 }
 
-void FH::drawImage(componentSet_t &merged, size_t unionCount)
+void FH::drawImage(DrawingMode mode)
 {
-    std::vector<std::optional<std::tuple<uint8_t, uint8_t, uint8_t>>> colors(
-        unionCount);
+    unsigned char *data =
+        (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
 
-    for (int i = 0; i < w * h; i++)
+    std::vector<std::optional<SegmentColor>> colors;
+
+    colors.assign(w * h, {});
+
+    if (mode == DrawingMode::segment)
     {
-        if (!colors[merged[i]].has_value())
+        for (int i = 0; i < w * h; i++)
         {
-            colors[merged[i]] = std::make_tuple(
-                std::rand() % 0xFF, std::rand() % 0xFF, std::rand() % 0xFF);
+            if (!colors[merged[i]].has_value())
+            {
+                colors[merged[i]] =
+                    SegmentColor(std::rand() % 0x100, std::rand() % 0x100,
+                                 std::rand() % 0x100);
+            }
+            auto &c = colors[merged[i]].value();
+            data[i * 3] = c.r;
+            data[(i * 3) + 1] = c.g;
+            data[(i * 3) + 2] = c.b;
         }
     }
+    else
+    {
+        for (int i = 0; i < w * h; i++)
+        {
+            int id = merged[i];
+            if (!colors[id].has_value())
+            {
+                colors[id] = SegmentColor(0, 0, 0);
+            }
+
+            auto &c = colors[id].value();
+            c.r += bmp[idx(i, 0)];
+            c.g += bmp[idx(i, 1)];
+            c.b += bmp[idx(i, 2)];
+            c.count++;
+        }
+
+        for (int i = 0; i < w * h; i++)
+        {
+            int id = merged[i];
+
+            auto &c = colors[id].value();
+            data[i * 3] = c.r / c.count;
+            data[i * 3 + 1] = c.g / c.count;
+            data[i * 3 + 2] = c.b / c.count;
+        }
+    }
+
+    stbi_write_bmp("out.bmp", w, h, 3, data);
+
+    free(data);
 }
+
+FH::~FH() { stbi_image_free(bmp); }

@@ -8,23 +8,33 @@
 typedef std::vector<Edge> channel_t;
 typedef std::vector<size_t> componentSet_t;
 
+enum DrawingMode
+{
+    segment,
+    color
+};
+
 class FH
 {
   private:
-    size_t w;
-    size_t h;
+    int w;
+    int h;
+    int k;
+    unsigned char *bmp;
+    std::vector<channel_t> channels;
+    std::vector<componentSet_t> components;
+    componentSet_t merged;
+
+    void getChannels();
+
+    void getComponents();
+
+    void mergeChannels();
+
+    void drawImage(DrawingMode mode);
 
   public:
-    bool includeDiagonal = true;
+    void segment(std::string image, int k);
 
-    void segment(std::string image);
-
-    void getChannels(std::vector<channel_t> &channels, unsigned char *bmp);
-
-    void getComponents(componentSet_t &components, channel_t &channel);
-
-    void mergeChannels(componentSet_t &merged,
-                       std::vector<componentSet_t> &components);
-
-    void drawImage(componentSet_t &merged, size_t unionCount);
+    ~FH();
 };
