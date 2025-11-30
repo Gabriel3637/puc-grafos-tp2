@@ -4,8 +4,11 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#include <iostream>
+#include "fh.hpp"
 
-#include "graph.hpp"
-
-int main(void) { return 0; }
+int main(int argc, char **argv)
+{
+    FH fh;
+    fh.segment(argv[1], atoi(argv[2]));
+    return 0;
+}

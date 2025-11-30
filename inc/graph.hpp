@@ -1,8 +1,13 @@
+#pragma once
+
 #include <cstdint>
 #include <expected>
 #include <optional>
 #include <string>
 #include <vector>
+#include <iostream>
+
+
 
 enum GraphError
 {
@@ -15,13 +20,27 @@ typedef struct Edge
     size_t v;
     uint8_t w;
 
+    Edge() : u(0), v(0), w(0) {}
     Edge(size_t u, size_t v, uint8_t w)
     {
         this->u = u;
         this->v = v;
         this->w = w;
     }
+
+    bool operator<(const Edge& EdgeComp){
+      return w < EdgeComp.w;
+    }
+
+    bool operator>(const Edge& EdgeComp){
+      return w > EdgeComp.w;
+    }
+    friend std::ostream& operator<<(std::ostream& str, const Edge& currentEdge) {
+      str << "Edge(OrigemV: " << currentEdge.v << " DestinoU: " << currentEdge.u << " Peso: " << currentEdge.w << " )"; 
+      return str;
+    }
 } Edge;
+
 
 class Graph
 {
