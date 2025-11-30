@@ -15,7 +15,7 @@ int main(void) {
     unsigned char *img =
         stbi_load("imgs/test.png", &width, &height, &channels, 3);
     
-    stbi_image_free(img);
+    
     //retorna a imagem convertida em super array
     for(int i=0;i<width*height*3;i++){
         std::cout << "[" << (int)img[i] << "] ";
@@ -31,7 +31,7 @@ int main(void) {
             if(i%3==0){//red
                 //esq
                 if((i/3)%width>0){
-                    if(img[i]> img[i-3]){
+                    if(img[i]>= img[i-3]){
                         red.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
                     }else if(img[i] < img[i-3]){
                         red.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
@@ -39,7 +39,7 @@ int main(void) {
                 }
                 //cima
                 if(i/3/width>0){
-                    if(img[i]> img[i-width*3]){
+                    if(img[i]>= img[i-width*3]){
                         red.addEdge(i/3,i/3-width,img[i]-img[i-width*3]);
                     }else if(img[i] < img[i - width*3]){
                         red.addEdge(i/3-width,i/3,img[i-width*3]-img[i]);
@@ -47,7 +47,7 @@ int main(void) {
                 }
             }else if(i%3==1){//green
                 if((i/3)%width>0){
-                    if(img[i]> img[i-3]){
+                    if(img[i]>= img[i-3]){
                         green.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
                     }else if(img[i] < img[i-3]){
                         green.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
@@ -55,7 +55,7 @@ int main(void) {
                 }
                 //cima
                 if(i/3/width>0){
-                    if(img[i]> img[i-width*3]){
+                    if(img[i]>= img[i-width*3]){
                         green.addEdge(i/3,(i/3-width),img[i]-img[i-width*3]);
                     }else if(img[i] < img[i - width*3]){
                         green.addEdge((i/3-width),i/3,img[i-width*3]-img[i]);
@@ -63,7 +63,7 @@ int main(void) {
                 }
             }else{//blue
                 if((i/3)%width>0){
-                    if(img[i]> img[i-3]){
+                    if(img[i]>= img[i-3]){
                         blue.addEdge(i/3,(i/3)-1,img[i]-img[i-3]);
                     }else if(img[i] < img[i-3]){
                         blue.addEdge((i/3)-1,i/3,img[i-3]-img[i]);
@@ -71,7 +71,7 @@ int main(void) {
                 }
                 //cima
                 if(i/3/width>0){
-                    if(img[i]> img[i-width*3]){
+                    if(img[i]>= img[i-width*3]){
                         blue.addEdge(i/3,(i/3-width),img[i]-img[i-width*3]);
                     }else if(img[i] < img[i - width*3]){
                         blue.addEdge((i/3-width),i/3,img[i-width*3]-img[i]);
@@ -87,6 +87,24 @@ int main(void) {
     std::cout << "Red: \n" << red.toString() << std::endl;
     std::cout << "Green: \n" << green.toString() << std::endl;
     std::cout << "Blue: \n" << blue.toString() << std::endl;
+
+    Graph graph = Graph(5);
+
+    graph.addEdge(0, 1, 10);  
+    graph.addEdge(0, 2, 5);
+    graph.addEdge(2, 0, 1);     
+    graph.addEdge(1, 2, 2);   
+    graph.addEdge(1, 3, 1);   
+    graph.addEdge(3, 4, 7);   
+    graph.addEdge(2, 4, 3);
+    graph.addEdge(2, 3, 2);
+    graph.addEdge(3, 1, 1);      
+
+    graph.addEdge(4, 0, 8);
+    std::cout << "graph: \n" << graph.toString() << std::endl;
+    std::cout << "MSA: \n" << graph.optimumBranchingTarjan().toString() << std::endl;
+
+    stbi_image_free(img);
 
     return 0; 
 }
