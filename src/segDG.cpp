@@ -29,23 +29,23 @@ double euclidiana(unsigned char *img, int i, int j) {
 void segDG(std::string im) { 
     
      int width=2, height=2, channels = 3;
-     
     unsigned char *img =
         stbi_load(im.c_str(), &width, &height, &channels, 3);
     
     
     //retorna a imagem convertida em super array
+    /*
     for(int i=0;i<width*height*3;i++){
         std::cout << "[" << (int)img[i] << "] ";
     }
-    std::cout << '\n';
+    std::cout << '\n';*/
     //cada vértice é de 3 em 3
     double maxDist = 0;
     for(int i = 0; i < width*height*3; i += 3) {
         if((i/3)%width > 0) maxDist = std::max(maxDist, euclidiana(img, i/3, i/3-1));
         if(i/3/width > 0) maxDist = std::max(maxDist, euclidiana(img, i/3, i/3-width));
     }
-    double gamma = maxDist * 1.5;
+    double gamma = maxDist * 2;
     
     Graph image = Graph(width*height);
     for(int i=0;i<width*height*3;i=i+3){
@@ -61,7 +61,7 @@ void segDG(std::string im) {
         }
     }
 
-    std::cout << "Image: \n" << image.toString() << std::endl;
+    //std::cout << "Image: \n" << image.toString() << std::endl;
 
     //adiciono vértice ligando a todo mundo:
     Graph image2 = Graph(width*height+1);
@@ -77,10 +77,10 @@ void segDG(std::string im) {
         image2.addEdge(width*height, i, gamma);
     }
 
-    std::cout << "Image2: \n" << image2.toString() << std::endl;
+    //std::cout << "Image2: \n" << image2.toString() << std::endl;
 
     Graph gab = image2.optimumBranchingGabow(width*height);
-    std::cout << "MSA: \n" << gab.toString() << std::endl;
+    //std::cout << "MSA: \n" << gab.toString() << std::endl;
 
     Graph image3 = Graph(width*height);
     for (int u = 0; u < width*height; u++) {
