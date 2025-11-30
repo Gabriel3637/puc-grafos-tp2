@@ -26,11 +26,10 @@ double euclidiana(unsigned char *img, int i, int j) {
     return dist;
 }
 
-int main(void) { 
+void segDG(std::string im) { 
     
      int width=2, height=2, channels = 3;
      
-    std::string im = "imgs/c45.png";
     unsigned char *img =
         stbi_load(im.c_str(), &width, &height, &channels, 3);
     
@@ -100,6 +99,4 @@ int main(void) {
     }  
 
     stbi_image_free(img);
-
-    return 0; 
 }
