@@ -237,5 +237,53 @@ class tarjanMSA{
         return solution;
     }
 
+    struct UnionFind {
+        std::vector<int> parent, rank;
+
+        UnionFind(int n){
+            parent.resize(n);
+            rank.resize(n, 0);
+            for(int i = 0; i < n; i++)
+                parent[i] = i;
+        }
+
+        int find(int x){
+            if(parent[x] != x)
+                parent[x] = find(parent[x]); // path compression
+            return parent[x];
+        }
+
+        void unite(int a, int b){
+            a = find(a);
+            b = find(b);
+            if(a == b) return;
+
+            if(rank[a] < rank[b]) parent[a] = b;
+            else if(rank[a] > rank[b]) parent[b] = a;
+            else{
+                parent[b] = a;
+                rank[a]++;
+            }
+        }
+    };
+
+    std::vector<int> componentesFracamenteConexos(int V, std::vector<Edge> edges) {
+
+        UnionFind uf(V);
+
+        // Para componentes FRACAMENTE conexos,
+        // ignoramos a direção das arestas e unimos u <-> v
+        for (auto &e : edges) {
+        uf.unite(e.u, e.v);
+    }
+
+        // Cada vértice recebe o ID do seu componente
+        std::vector<int> comp(V);
+        for(int i = 0; i < V; i++)
+            comp[i] = uf.find(i);
+
+        return comp;
+    }
+
     ~tarjanMSA(){}
 };

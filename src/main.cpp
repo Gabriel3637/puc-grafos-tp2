@@ -12,162 +12,131 @@
 #include <cstdint>
 
 #include "tarjanMSA.cpp"
+#include <unordered_map>
+#include <array>
 
+double euclidiana(unsigned char *img, int i, int j) {
+    int ri = img[i * 3 + 0];
+    int gi = img[i * 3 + 1];
+    int bi = img[i * 3 + 2];
 
+    int rj = img[j * 3 + 0];
+    int gj = img[j * 3 + 1];
+    int bj = img[j * 3 + 2];
 
+    double dist = std::sqrt(
+        (ri - rj) * (ri - rj) +
+        (gi - gj) * (gi - gj) +
+        (bi - bj) * (bi - bj)
+    );
 
-
+    return dist;
+}
 
 int main(void) { 
-    /* 
+    
      int width=2, height=2, channels = 3;
-    
+     std::string im = "imgs/small.png";
     unsigned char *img =
-        stbi_load("imgs/test.png", &width, &height, &channels, 3);
-    
-    
+        stbi_load(im.c_str(), &width, &height, &channels, 3);
     //retorna a imagem convertida em super array
-    for(int i=0;i<width*height*3;i++){
-        std::cout << "[" << (int)img[i] << "] ";
-    }
-    std::cout << '\n';
     //cada vértice é de 3 em 3
-    std::vector<Edge> red(width*height);
-    std::vector<Edge> green(width*height);
-    std::vector<Edge> blue(width*height);
-
-    size_t countPixels = 0;
-    int incremento;
-    //para cada vértice, conecta ele com os vizinhos, o peso da aresta = maior - menor
-
-    Edge insertEdge;
-    for(int i=0;i<width*height*3;i++){
-        //exclui primeira linha e primeira coluna
-            if(i%3==0){//red
-                incremento = 0;
-                //esq
-                if((i/3)%width>0){
-                    if(img[i]>= img[i-3]){
-                        red[countPixels+ incremento] = {i/3,(i/3)-1, static_cast<u_int8_t>(img[i]-img[i-3])};
-                    }else if(img[i] < img[i-3]){
-                        red[countPixels+ incremento] = {(i/3)-1,i/3, static_cast<u_int8_t>(img[i-3]-img[i])};
-                    }
-                    incremento++;
-                }
-                //cima
-                if(i/3/width>0){
-                    if(img[i]>= img[i-width*3]){
-                        red[countPixels+incremento] = {i/3,i/3-width,static_cast<u_int8_t>(img[i]-img[i-width*3])};
-                    }else if(img[i] < img[i - width*3]){
-                        red[countPixels+incremento] = {i/3-width,i/3,static_cast<u_int8_t>(img[i-width*3]-img[i])};
-                    }
-                }
-            }else if(i%3==1){//green
-                incremento = 0;
-                if((i/3)%width>0){
-                    if(img[i]>= img[i-3]){
-                        green[countPixels+incremento] = {i/3,(i/3)-1,static_cast<u_int8_t>(img[i]-img[i-3])};
-                    }else if(img[i] < img[i-3]){
-                        green[countPixels+incremento] = {(i/3)-1,i/3, static_cast<u_int8_t>(img[i-3]-img[i])};
-                    }
-                    incremento++;
-                }
-                //cima
-                if(i/3/width>0){
-                    if(img[i]>= img[i-width*3]){
-                        green[countPixels+incremento] = {i/3,(i/3-width),static_cast<u_int8_t>(img[i]-img[i-width*3])};
-                    }else if(img[i] < img[i - width*3]){
-                        green[countPixels+incremento] = {(i/3-width),i/3, static_cast<u_int8_t>(img[i-width*3]-img[i])};
-                    }
-                }
-            }else{//blue
-                incremento = 0;
-                if((i/3)%width>0){
-                    if(img[i]>= img[i-3]){
-                        blue[countPixels+incremento] = {i/3,(i/3)-1, static_cast<u_int8_t>(img[i]-img[i-3])};
-                    }else if(img[i] < img[i-3]){
-                        blue[countPixels+incremento] = {(i/3)-1,i/3, static_cast<u_int8_t>(img[i-3]-img[i])};
-                    }
-                    incremento++;
-                }
-                //cima
-                if(i/3/width>0){
-                    if(img[i]>= img[i-width*3]){
-                        blue[countPixels+incremento] = {i/3,(i/3-width),static_cast<u_int8_t>(img[i]-img[i-width*3])};
-                    }else if(img[i] < img[i - width*3]){
-                        blue[countPixels+incremento] = {(i/3-width),i/3, static_cast<u_int8_t>(img[i-width*3]-img[i])};
-                    }
-                }
-            }
-            
-            if(i%3 == 2 && (i/3/width>0))
-                countPixels++;
-
-            if(i%3 == 2 && (i/3)%width>0)
-                countPixels++;
-            
-
-
-        //imaginando como uma matriz, n existe acima se for menor
-    } */
-
-    //fazer um grafo pra cada cor, no grafo, a aresta é o resultado da subtração do maior pro menor, apontando pro menor
-
-    //std::cout << graph.toString() << std::endl;
-/* 
-
-    std::cout << "---------------------RED-----------------" << std::endl;
-    for(int i = 0; i < width*height; i++){
-        std::cout << red[i] << std::endl;
+    double maxDist = 0;
+    for(int i = 0; i < width*height*3; i += 3) {
+        if((i/3)%width > 0) maxDist = std::max(maxDist, euclidiana(img, i/3, i/3-1));
+        if(i/3/width > 0) maxDist = std::max(maxDist, euclidiana(img, i/3, i/3-width));
+    }
+    double gamma = maxDist * 1.5;
+    std::vector<Edge> e;
+    
+    for(int i=0;i<width*height*3;i=i+3){
+        if((i/3)%width>0 ){//n é na esq
+            double dist = euclidiana(img, i/3, i/3-1);
+            e.push_back(Edge(i/3,i/3-1,dist));
+            e.push_back(Edge(i/3-1,i/3,dist));
+        }
+        if(i/3/width>0){//n é em cima
+            double dist = euclidiana(img, i/3, i/3-width);
+            e.push_back(Edge(i/3,i/3-width,dist));
+            e.push_back(Edge(i/3-width,i/3,dist));
+        }
     }
 
-    std::cout << "---------------------GREEN-----------------" << std::endl;
-    for(int i = 0; i < width*height; i++){
-        std::cout << green[i] << std::endl;
+    //adiciono vértice ligando a todo mundo(superroot):
+
+    for (int u = 0; u < width*height; u++) {
+        e.push_back(Edge(width*height, u, gamma));
+    }
+    std::cout<<"a\n";
+    tarjanMSA tMSA = tarjanMSA();
+    std::vector<Edge> e2 = tMSA.solveMaximumBranching(height*width+1,height*width,e);
+    std::cout<<"b\n";
+    std::vector<Edge> segmentated;
+    //tirar super vértice
+    for(Edge ee : e2){
+        if(ee.u != height*width){
+            segmentated.push_back(ee);
+        }
     }
 
+    std::cout<<"c\n";
+    std::vector<int> fracamente;
+    fracamente = tMSA.componentesFracamenteConexos(height*width,segmentated);
 
-    std::cout << "---------------------BLUE-----------------" << std::endl;
-    for(int i = 0; i < width*height; i++){
+    for (int idx = 0; idx < fracamente.size(); idx++) {
+        std::cout << fracamente[idx] << " ";
+    }
 
-        std::cout << blue[i] << std::endl;
-    } */
-
-    std::vector<Edge> teste = {
-        {0, 1, 10},  
-        {0, 2, 5},
-        {2, 0, 1},     
-        {1, 2, 2},   
-        {1, 3, 1},   
-        {3, 4, 7},   
-        {2, 4, 3},
-        {2, 3, 2},
-        {3, 1, 1},  
-        {4, 0, 8},
-        {5, 0, 1}   
+    struct Acc {
+        long r = 0, g = 0, b = 0;
+        int count = 0;
     };
 
-    Graph graph = Graph( 9 ,teste);
-    std::cout << "graph: \n" << graph.toString() << std::endl;
+    std::unordered_map<int, Acc> acc;
 
+    for (int i = 0; i < width * height; i++) {
+        int comp = fracamente[i];
 
-
-    tarjanMSA tarjan = tarjanMSA();
-    std::vector<Edge> aresstasH = tarjan.solveMaximumBranching(6, 5, teste);
-
-    for(Edge e : aresstasH){
-        std::cout << e << std::endl;
+        acc[comp].r += img[i*3 + 0];
+        acc[comp].g += img[i*3 + 1];
+        acc[comp].b += img[i*3 + 2];
+        acc[comp].count++;
     }
 
+    std::unordered_map<int, std::array<unsigned char,3>> corMedia;
 
-    /* Dmsta testeMsta = Dmsta();
-    testeMsta.optimumBranchingTarjan(5, teste); */
+    for (auto &p : acc) {
+        corMedia[p.first] = {
+            (unsigned char)(p.second.r / p.second.count),
+            (unsigned char)(p.second.g / p.second.count),
+            (unsigned char)(p.second.b / p.second.count)
+        };
+    }
 
-    
-    
-    /* std::cout << "MSA: \n" << << std::endl;
+    unsigned char* out =
+        (unsigned char*)malloc(width * height * 3);
 
-    stbi_image_free(img); */
+    for (int i = 0; i < width * height; i++) {
+        auto c = corMedia[fracamente[i]];
 
-    return 0; 
+        out[i*3 + 0] = c[0];
+        out[i*3 + 1] = c[1];
+        out[i*3 + 2] = c[2];
+    }
+
+    std::cout<<"d\n";
+    stbi_write_png(
+        "imgs/segmentada_media.png",
+        width,
+        height,
+        3,
+        out,
+        width * 3
+    );
+    std::cout<<"e\n";
+
+    free(out);
+
+    stbi_image_free(img);
+    return 0;
 }

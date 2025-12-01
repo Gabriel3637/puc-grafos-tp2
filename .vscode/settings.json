@@ -57,6 +57,8 @@
         "cstring": "cpp",
         "list": "cpp",
         "map": "cpp",
-        "expected": "cpp"
+        "expected": "cpp",
+        "unordered_set": "cpp",
+        "stack": "cpp"
     }
 }
