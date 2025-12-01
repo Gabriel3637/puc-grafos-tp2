@@ -32,7 +32,7 @@ double euclidiana(unsigned char *img, int i, int j) {
 int main(void) { 
     
      int width=2, height=2, channels = 3;
-     std::string im = "imgs/Chiaki_Nanami_Hoi4.png";
+     std::string im = "imgs/c45.png";
     unsigned char *img =
         stbi_load(im.c_str(), &width, &height, &channels, 3);
     
