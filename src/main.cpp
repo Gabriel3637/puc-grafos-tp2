@@ -36,7 +36,7 @@ double euclidiana(unsigned char *img, int i, int j) {
 int main(void) { 
     
      int width=2, height=2, channels = 3;
-     std::string im = "imgs/small.png";
+     std::string im = "imgs/teste1.png";
     unsigned char *img =
         stbi_load(im.c_str(), &width, &height, &channels, 3);
     //retorna a imagem convertida em super array
