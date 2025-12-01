@@ -54,6 +54,8 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "list": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "map": "cpp",
+        "expected": "cpp"
     }
 }
