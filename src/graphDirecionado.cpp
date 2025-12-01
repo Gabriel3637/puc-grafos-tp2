@@ -122,7 +122,6 @@ Graph Graph::optimumBranchingGabow(int root) {
         }
     }
 
-    // Detectar ciclos
     std::vector<int> visited(V, -1);
     std::vector<int> cycle(V, -1);
     int cycleId = 0;
@@ -135,7 +134,6 @@ Graph Graph::optimumBranchingGabow(int root) {
         v = inEdge[v].u;
     }
     if(v != root && visited[v] == i) {
-        // ciclo encontrado
         int u = v;
         do {
             cycle[u] = cycleId;
@@ -157,7 +155,6 @@ Graph Graph::optimumBranchingGabow(int root) {
         return res;
     }
 
-    // Contrair ciclos
     int newV = V - cycleId;
     std::vector<int> newVertex(V, -1);
     int idx = 0;
@@ -175,7 +172,6 @@ Graph Graph::optimumBranchingGabow(int root) {
 
     Graph contractedRes = contracted.optimumBranchingGabow(newVertex[root]);
 
-    // Reconstruir a árvore final
     Graph result(V);
     for(int u = 0; u < V; u++) {
         if(inEdge[u].u != -1 && cycle[u] == -1) result.addEdge(inEdge[u].u, inEdge[u].v, inEdge[u].w);
@@ -191,7 +187,6 @@ Graph Graph::optimumBranchingTarjan(int root) {
     int V = vertexes.size();
     std::vector<Edge> inEdge(V, Edge(-1, -1, std::numeric_limits<double>::max()));
 
-    // Passo 1: Selecionar a aresta de menor peso de cada vértice (exceto a raiz)
     for (int u = 0; u < V; u++) {
         for (auto &e : listaAdjacencia[u]) {
             if (e.v != root && e.w < inEdge[e.v].w) {
@@ -200,7 +195,6 @@ Graph Graph::optimumBranchingTarjan(int root) {
         }
     }
 
-    // Passo 2: Detectar ciclos
     std::vector<int> visited(V, -1), cycle(V, -1);
     int cycleId = 0;
 
@@ -211,7 +205,7 @@ Graph Graph::optimumBranchingTarjan(int root) {
             visited[v] = i;
             v = inEdge[v].u;
         }
-        if (v != root && visited[v] == i) { // ciclo encontrado
+        if (v != root && visited[v] == i) { 
             int u = v;
             do {
                 cycle[u] = cycleId;
@@ -221,7 +215,6 @@ Graph Graph::optimumBranchingTarjan(int root) {
         }
     }
 
-    // Passo 3: Se não há ciclos, a árvore ótima está pronta
     bool hasCycle = false;
     for (int i = 0; i < V; i++) if (cycle[i] != -1) hasCycle = true;
     if (!hasCycle) {
@@ -233,7 +226,6 @@ Graph Graph::optimumBranchingTarjan(int root) {
         return res;
     }
 
-    // Passo 4: Contrair ciclos
     int newV = V - cycleId;
     std::vector<int> newVertex(V, -1);
     int idx = 0;
@@ -247,16 +239,14 @@ Graph Graph::optimumBranchingTarjan(int root) {
             int cu = newVertex[u], cv = newVertex[e.v];
             if (cu != cv) {
                 double w = e.w;
-                if (cycle[e.v] != -1) w -= inEdge[e.v].w; // ajustar peso para ciclos
+                if (cycle[e.v] != -1) w -= inEdge[e.v].w; 
                 contracted.addEdge(cu, cv, w);
             }
         }
     }
 
-    // Passo 5: Recursivamente resolver o grafo contraído
     Graph contractedRes = contracted.optimumBranchingTarjan(newVertex[root]);
 
-    // Passo 6: Reconstruir a árvore final
     Graph result(V);
     for (int u = 0; u < V; u++) {
         if (inEdge[u].u != -1 && cycle[u] == -1) {
@@ -284,7 +274,7 @@ struct UnionFind {
 
     int find(int x){
         if(parent[x] != x)
-            parent[x] = find(parent[x]); // path compression
+            parent[x] = find(parent[x]); 
         return parent[x];
     }
 
@@ -303,23 +293,17 @@ struct UnionFind {
 };
 
 
-// ==================================================
-// Componentes Fracamente Conexos — Usando Union-Find
-// ==================================================
 std::vector<int> Graph::componentesFracamenteConexos() {
 
     int V = vertexes.size();
     UnionFind uf(V);
 
-    // Para componentes FRACAMENTE conexos,
-    // ignoramos a direção das arestas e unimos u <-> v
     for(int u = 0; u < V; u++){
         for(auto &e : listaAdjacencia[u]){
             uf.unite(u, e.v);
         }
     }
 
-    // Cada vértice recebe o ID do seu componente
     std::vector<int> comp(V);
     for(int i = 0; i < V; i++)
         comp[i] = uf.find(i);
