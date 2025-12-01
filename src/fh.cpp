@@ -53,6 +53,7 @@ void FH::segment(std::string image, int k)
     getComponents();
     mergeChannels();
     drawImage(DrawingMode::color);
+    drawImage(DrawingMode::segment);
 }
 
 void FH::getChannels()
@@ -244,7 +245,18 @@ void FH::drawImage(DrawingMode mode)
         }
     }
 
-    stbi_write_bmp("out.bmp", w, h, 3, data);
+    std::string fileName = "out";
+    if (mode == DrawingMode::color)
+    {
+        fileName += "-color";
+    }
+    else
+    {
+        fileName += "-segment";
+    }
+    fileName += ".bmp";
+
+    stbi_write_bmp(fileName.c_str(), w, h, 3, data);
 
     free(data);
 }
