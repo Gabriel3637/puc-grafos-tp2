@@ -12,10 +12,10 @@ for file in src/*.cpp; do
     if [ -f "$file" ]; then
         filename=$(basename "$file" .cpp)
 
-        g++ -Iinc -Isrc -c "$file" -o ".obj/${filename}.o"
+        g++ -std=c++23 -Iinc -Isrc -c "$file" -o ".obj/${filename}.o"
     fi
 done
 
-g++ .obj/*.o -o bin/main
+g++ .obj/*.o -o bin/main -std=c++23
 
 echo "Build process complete! Available at bin/main"
