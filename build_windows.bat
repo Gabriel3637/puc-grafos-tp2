@@ -1,8 +1,25 @@
 @echo off
+setlocal enabledelayedexpansion
 
-if not exist bin mkdir bin
+REM Criar diretório bin se não existir
+if not exist bin (
+    mkdir bin
+)
 
-if not exist .obj mkdir .obj
+REM Criar diretório .obj se não existir
+if not exist .obj (
+    mkdir .obj
+)
 
-g++ -Iinc -Isrc -c src/main.cpp -o .obj/main.o
-g++ .obj/*.o -o bin/main.exe
+REM Compilar todos os arquivos .cpp em src
+for %%f in (src\*.cpp) do (
+    if exist "%%f" (
+        set "filename=%%~nf"
+        g++ -Iinc -Isrc -c "%%f" -o ".obj/!filename!.o"
+    )
+)
+
+REM Lincar os objetos
+g++ .obj\*.o -o bin\main.exe
+
+echo Build process complete! Available at bin\main.exe
