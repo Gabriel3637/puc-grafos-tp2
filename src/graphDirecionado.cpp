@@ -187,6 +187,91 @@ Graph Graph::optimumBranchingGabow(int root) {
     return result;
 }
 
+Graph Graph::optimumBranchingTarjan(int root) {
+    int V = vertexes.size();
+    std::vector<Edge> inEdge(V, Edge(-1, -1, std::numeric_limits<double>::max()));
+
+    // Passo 1: Selecionar a aresta de menor peso de cada vértice (exceto a raiz)
+    for (int u = 0; u < V; u++) {
+        for (auto &e : listaAdjacencia[u]) {
+            if (e.v != root && e.w < inEdge[e.v].w) {
+                inEdge[e.v] = e;
+            }
+        }
+    }
+
+    // Passo 2: Detectar ciclos
+    std::vector<int> visited(V, -1), cycle(V, -1);
+    int cycleId = 0;
+
+    for (int i = 0; i < V; i++) {
+        if (i == root) continue;
+        int v = i;
+        while (v != root && visited[v] == -1 && inEdge[v].u != -1) {
+            visited[v] = i;
+            v = inEdge[v].u;
+        }
+        if (v != root && visited[v] == i) { // ciclo encontrado
+            int u = v;
+            do {
+                cycle[u] = cycleId;
+                u = inEdge[u].u;
+            } while (u != v);
+            cycleId++;
+        }
+    }
+
+    // Passo 3: Se não há ciclos, a árvore ótima está pronta
+    bool hasCycle = false;
+    for (int i = 0; i < V; i++) if (cycle[i] != -1) hasCycle = true;
+    if (!hasCycle) {
+        Graph res(V);
+        for (int i = 0; i < V; i++) {
+            if (i == root) continue;
+            if (inEdge[i].u != -1) res.addEdge(inEdge[i].u, inEdge[i].v, inEdge[i].w);
+        }
+        return res;
+    }
+
+    // Passo 4: Contrair ciclos
+    int newV = V - cycleId;
+    std::vector<int> newVertex(V, -1);
+    int idx = 0;
+    for (int i = 0; i < V; i++) if (cycle[i] == -1) newVertex[i] = idx++;
+    std::vector<int> cycleMap(cycleId, idx++);
+    for (int i = 0; i < V; i++) if (cycle[i] != -1) newVertex[i] = cycleMap[cycle[i]];
+
+    Graph contracted(idx);
+    for (int u = 0; u < V; u++) {
+        for (auto &e : listaAdjacencia[u]) {
+            int cu = newVertex[u], cv = newVertex[e.v];
+            if (cu != cv) {
+                double w = e.w;
+                if (cycle[e.v] != -1) w -= inEdge[e.v].w; // ajustar peso para ciclos
+                contracted.addEdge(cu, cv, w);
+            }
+        }
+    }
+
+    // Passo 5: Recursivamente resolver o grafo contraído
+    Graph contractedRes = contracted.optimumBranchingTarjan(newVertex[root]);
+
+    // Passo 6: Reconstruir a árvore final
+    Graph result(V);
+    for (int u = 0; u < V; u++) {
+        if (inEdge[u].u != -1 && cycle[u] == -1) {
+            result.addEdge(inEdge[u].u, inEdge[u].v, inEdge[u].w);
+        }
+    }
+    for (int u = 0; u < V; u++) {
+        if (cycle[u] != -1) {
+            result.addEdge(inEdge[u].u, inEdge[u].v, inEdge[u].w);
+        }
+    }
+
+    return result;
+}
+
 struct UnionFind {
     std::vector<int> parent, rank;
 

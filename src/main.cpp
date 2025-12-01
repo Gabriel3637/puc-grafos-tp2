@@ -85,7 +85,8 @@ int main(void) {
 
     std::cout << "abc";
 
-    Graph gab = image2.optimumBranchingGabow(width*height);
+    //Graph gab = image2.optimumBranchingGabow(width*height);
+    Graph gab = image2.optimumBranchingTarjan(width*height);
     std::cout << "MSA: \n" << gab.toString() << std::endl;
 
     Graph image3 = Graph(width*height);

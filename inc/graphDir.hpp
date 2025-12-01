@@ -29,6 +29,7 @@ class Graph
     std::string toString();
     void addEdge(int u, int v, int w);
     Graph optimumBranchingGabow(int root);
+    Graph optimumBranchingTarjan(int root);
     std::vector<int> componentesFracamenteConexos();
     void SCCUtil(int u, int disc[], int low[], std::stack<int> *st,
                  bool stackMember[], std::vector<std::vector<int>> &result);
